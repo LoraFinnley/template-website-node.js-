@@ -1,3 +1,7 @@
+body {
+    background-image: url("/images/general/pattern.png");
+    background-repeat: repeat;
+}
 h1 {
     color: red;
-}
+    }
