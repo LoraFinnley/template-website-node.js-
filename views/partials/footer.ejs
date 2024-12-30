@@ -40,7 +40,7 @@
 
       const jsonData = Object.fromEntries(formData.entries());
       console.log("4. jsonData: ", jsonData);
-      // route to send-email
+      
       fetch("/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
