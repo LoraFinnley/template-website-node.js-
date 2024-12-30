@@ -1,11 +1,65 @@
 <footer>
    <p>footer-partial is working!</p>
   
-  </footer>
+</footer>
+<div class="cookie-icon" onclick="openCookieSettings()">
+  <img src="/images/general/cookie.svg" alt="Cookies" />
+</div>
   <!-- bootstrap -->
-    <script src="/js/bootstrap.bundle.min.js"></script>
-  <!-- masonry -->
-  <script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
-  <script src="/js/masonry.js"></script>
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <!-- cookie consent  -->
+  <script type="module" src="/js/cookieconsent-config.js"></script>
+  <!-- Google reCAPTCHA (eMail form)-->
+  <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
+  <!--  eMail form  -->
+  <script>
+    // Popup fuction
+    function showPopup(message) {
+      const popup = document.createElement("div");
+      popup.className = "popup";
+      popup.innerText = message;
+  
+      document.body.appendChild(popup);
+  
+      setTimeout(() => {
+        popup.classList.add("fade-out");
+        setTimeout(() => popup.remove(), 500);
+      }, 3000);
+    }
+
+    // verify recaptcha
+    function onSubmit(token) {
+      console.log("1. function onSubmit triggered, token:", token);
+
+      const form = document.querySelector(".contact_form");
+      console.log("2. form: ", form); 
+      const formData = new FormData(form);
+      console.log("3. formData: ", formData);
+    
+      formData.append("recaptcha-token", token);
+
+      const jsonData = Object.fromEntries(formData.entries());
+      console.log("4. jsonData: ", jsonData);
+      // route to send-email
+      fetch("/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonData),
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Antwort vom Server:", data);
+        if (data.success) {
+          showPopup(data.message);
+          form.reset(); // empty the form after sending
+        } else {
+          alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
+        }
+      })
+      .catch((error) => {
+        console.error("Fehler beim Senden der Nachricht:", error);
+      });
+    }
+  </script>
   </body>
   </html>
